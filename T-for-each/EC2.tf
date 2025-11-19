@@ -1,0 +1,40 @@
+##################################################### Ec2 Instance #####################################################
+resource "aws_instance" "Shabu-Terraform-Instance" {
+  for_each               = var.instance
+  ami                    = "ami-09c813fb71547fc4f"
+  vpc_security_group_ids = [aws_security_group.Shabu-Security.id]
+  instance_type          = each.value
+
+  tags = {
+    Name = each.key
+  }
+}
+################################################### Ec2 Instance #####################################################
+
+################################################# Security Group #####################################################
+resource "aws_security_group" "Shabu-Security" {
+  name        = "Shabu-Security"
+  description = "allow-all with out any restriciton"
+
+  dynamic "ingress" {
+    for_each = var.ingress_ports
+    content {
+      from_port   = ingress.value["from_port"]
+      to_port     = ingress.value["to_port"]
+      protocol    = ingress.value["protocol"]
+      cidr_blocks = ingress.value["cidr_blocks"]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    name = "allow-all"
+  }
+}
+################################################# Security Group #####################################################
