@@ -4,10 +4,11 @@ resource "aws_instance" "Shabu-Terraform-Instance" {
   instance_type          = "t3.micro"
 
   root_block_device {
-    volume_size = 50 # in GB <<----- I increased this!
+    volume_size = 30 # in GB <<----- I increased this!
     volume_type = "gp3"
   }
   user_data = file("docker.sh")
+
   tags = {
     Name = "docker"
   }
