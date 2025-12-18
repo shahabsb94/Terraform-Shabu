@@ -12,3 +12,5 @@ dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 systemctl start docker
 systemctl enable docker
 usermod -aG docker ec2-user
+apt-get update
+apt install telnet
