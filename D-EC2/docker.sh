@@ -1,16 +1,22 @@
 #!/bin/bash
+set -euxo pipefail
 
-growpart /dev/nvme0n1 4
-lvextend -l +50%FREE /dev/RootVG/rootVol
-lvextend -l +50%FREE /dev/RootVG/varVol
-xfs_growfs /
-xfs_growfs /var
+# Expand disk (Amazon Linux 2023)
+growpart /dev/nvme0n1 4 || true
+lvextend -l +50%FREE /dev/RootVG/rootVol || true
+lvextend -l +50%FREE /dev/RootVG/varVol || true
+xfs_growfs / || true
+xfs_growfs /var || true
 
+# Install Docker
 dnf -y install dnf-plugins-core
 dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-systemctl start docker
+dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
 systemctl enable docker
+systemctl start docker
+
 usermod -aG docker ec2-user
-apt-get update
-apt install telnet
+
+# Install telnet (correct way)
+dnf install -y telnet
