@@ -1,5 +1,5 @@
 resource "aws_instance" "Shabu-Terraform-Instance" {
-  ami                    = "ami-09c813fb71547fc4f"
+  ami                    = data.aws_ami.joindevops.id
   vpc_security_group_ids = [aws_security_group.Shabu-Security.id]
   instance_type          = "t3.micro"
 
